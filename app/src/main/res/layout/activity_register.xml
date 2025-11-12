@@ -57,7 +57,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:ems="10"
-        android:hint="Date of Birth"
+        android:hint="Date of Birth (dd/mm/yyyy)"
         android:inputType="date"
         app:layout_constraintBottom_toTopOf="@+id/et_name"
         app:layout_constraintStart_toStartOf="parent" />
