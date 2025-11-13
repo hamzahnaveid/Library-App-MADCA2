@@ -1,9 +1,15 @@
 package com.example.libraryapp_madca2;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,5 +33,24 @@ public class LibraryActivity extends AppCompatActivity {
         });
         user = (User) getIntent().getExtras().get("USER");
         Log.d("User Details", user.getEmail());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.profile_button) {
+            Intent intent = new Intent(LibraryActivity.this, UserProfileActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("USER", user);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+        return true;
     }
 }
