@@ -1,8 +1,11 @@
 package com.example.libraryapp_madca2;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.libraryapp_madca2.classes.User;
+import com.example.libraryapp_madca2.db.DBHelper;
+
 public class MainActivity extends AppCompatActivity {
+
+    DBHelper dbHelper;
+    EditText etEmail, etPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +31,52 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        dbHelper = new DBHelper(this);
+        etEmail = findViewById(R.id.et_email);
+        etPassword = findViewById(R.id.et_password);
     }
 
     public void toRegisterScreen(View view) {
         Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
+
+    public void signIn(View view) {
+        User user;
+        String email = etEmail.getText().toString();
+        String password = etPassword.getText().toString();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(
+                    this, "Please fill in the required fields",
+                    Toast.LENGTH_SHORT
+                    ).show();
+            return;
+        }
+
+        user = dbHelper.findUser(email);
+        if (user == null) {
+            Toast.makeText(
+                    this, "Incorrect email. Please try again",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        if (!user.getPassword().equals(password)) {
+            Toast.makeText(
+                    this, "Incorrect password. Please try again",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        Intent intent = new Intent(MainActivity.this, LibraryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("USER", user);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
 }

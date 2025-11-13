@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +17,7 @@ import com.example.libraryapp_madca2.db.DBHelper;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private DBHelper dbhelper;
+    private DBHelper dbHelper;
 
     EditText etEmail, etPassword, etName, etDob;
     User user;
@@ -36,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         etName = findViewById(R.id.et_name);
         etDob = findViewById(R.id.et_dob);
 
-        dbhelper = new DBHelper(this);
+        dbHelper = new DBHelper(this);
     }
 
     public void register(View view) {
@@ -45,12 +46,28 @@ public class RegisterActivity extends AppCompatActivity {
         String name = etName.getText().toString();
         String dob = etDob.getText().toString();
 
-        String createUserStatement = "INSERT INTO User VALUES('" +
-                email + "', '" + password +
-                "', '" + name + "', '" + dob + "')";
-        dbhelper.insert(createUserStatement);
+        if (dbHelper.findUser(email) != null) {
+            Toast.makeText(
+                    this, "This email is already in use. Please try again",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty() || dob.isEmpty()) {
+            Toast.makeText(
+                    this, "Please fill in all of the required fields",
+                    Toast.LENGTH_SHORT
+            ).show();
+            etEmail.setText("");
+            etPassword.setText("");
+            etName.setText("");
+            etDob.setText("");
+            return;
+        }
 
         User user = new User(email, password, name, dob);
+        dbHelper.insertUser(user);
 
         Intent intent = new Intent(RegisterActivity.this, LibraryActivity.class);
         Bundle bundle = new Bundle();

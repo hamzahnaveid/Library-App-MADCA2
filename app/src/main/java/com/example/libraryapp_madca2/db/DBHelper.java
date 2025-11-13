@@ -1,12 +1,15 @@
 package com.example.libraryapp_madca2.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.example.libraryapp_madca2.classes.User;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -30,10 +33,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insert(String insertStatement) {
+    public void insertUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
+        String createUserStatement = "INSERT INTO User VALUES('" +
+                user.getEmail() + "', '" + user.getPassword() +
+                "', '" + user.getName() + "', '" + user.getDob() + "')";
         try {
-            db.execSQL(insertStatement);
+            db.execSQL(createUserStatement);
         } catch (SQLException e) {
             Toast.makeText(context,
                     "Error in inserting data into DB",
@@ -41,5 +47,25 @@ public class DBHelper extends SQLiteOpenHelper {
                     ).show();
         }
         db.close();
+    }
+    public User findUser(String email) {
+        String password, name, dob;
+        SQLiteDatabase db = getReadableDatabase();
+
+        String findUserStatement = "SELECT * FROM User WHERE Email = '" + email + "'";
+
+        Cursor cursor = db.rawQuery(findUserStatement, null);
+        if (cursor.moveToFirst()) {
+            password = cursor.getString(1);
+            name = cursor.getString(2);
+            dob = cursor.getString(3);
+        }
+        else {
+            return null;
+        }
+
+        cursor.close();
+        db.close();
+        return new User(email, password, name, dob);
     }
 }

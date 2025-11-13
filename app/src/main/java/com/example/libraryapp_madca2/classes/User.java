@@ -39,4 +39,12 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
 }

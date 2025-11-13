@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <EditText
-        android:id="@+id/et_registeremail"
+        android:id="@+id/et_email"
         android:layout_width="415dp"
         android:layout_height="48dp"
         android:layout_marginStart="4dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_registerpassword"
+        android:id="@+id/et_password"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginStart="4dp"
@@ -41,7 +41,7 @@
         android:onClick="signIn"
         android:text="Sign in"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_registerpassword" />
+        app:layout_constraintTop_toBottomOf="@+id/et_password" />
 
     <Button
         android:id="@+id/button_toRegister"
@@ -63,7 +63,7 @@
         android:layout_marginTop="92dp"
         android:layout_marginEnd="131dp"
         android:layout_marginBottom="56dp"
-        app:layout_constraintBottom_toTopOf="@+id/et_registeremail"
+        app:layout_constraintBottom_toTopOf="@+id/et_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
