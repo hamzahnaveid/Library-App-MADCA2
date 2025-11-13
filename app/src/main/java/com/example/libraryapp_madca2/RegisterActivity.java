@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         Intent intent = new Intent(RegisterActivity.this, LibraryActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("USER", user);
+        bundle.putString("EMAIL", email);
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -1,8 +1,6 @@
 package com.example.libraryapp_madca2.classes;
 
-import java.io.Serializable;
-
-public class User implements Serializable {
+public class User {
     private String email;
     private String password;
     private String name;

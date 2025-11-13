@@ -68,4 +68,22 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return new User(email, password, name, dob);
     }
+
+    public void updateUser(String email, String name, String dob) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String updateUserStatement = "UPDATE User SET Name = '" +
+                name +"', Dob = '" + dob + "' WHERE Email = '" +
+                email + "'";
+
+        try {
+            db.execSQL(updateUserStatement);
+        } catch (SQLException e) {
+            Toast.makeText(context,
+                    "Error in updating user data",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+        db.close();
+    }
 }
