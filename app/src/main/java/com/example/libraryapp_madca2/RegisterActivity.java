@@ -1,7 +1,6 @@
 package com.example.libraryapp_madca2;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -16,67 +15,64 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.libraryapp_madca2.classes.User;
 import com.example.libraryapp_madca2.db.DBHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
-    DBHelper dbHelper;
-    EditText etEmail, etPassword;
+    private DBHelper dbHelper;
+
+    EditText etEmail, etPassword, etName, etDob;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        etEmail = findViewById(R.id.et_registeremail);
+        etPassword = findViewById(R.id.et_registerpassword);
+        etName = findViewById(R.id.et_name);
+        etDob = findViewById(R.id.et_dob);
 
         dbHelper = new DBHelper(this);
-        etEmail = findViewById(R.id.et_email);
-        etPassword = findViewById(R.id.et_password);
     }
 
-    public void toRegisterScreen(View view) {
-        Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-        startActivity(intent);
-    }
-
-    public void signIn(View view) {
-        User user;
+    public void register(View view) {
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
+        String name = etName.getText().toString();
+        String dob = etDob.getText().toString();
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (dbHelper.findUser(email) != null) {
             Toast.makeText(
-                    this, "Please fill in the required fields",
-                    Toast.LENGTH_SHORT
-                    ).show();
-            return;
-        }
-
-        user = dbHelper.findUser(email);
-        if (user == null) {
-            Toast.makeText(
-                    this, "Incorrect email. Please try again",
+                    this, "This email is already in use. Please try again",
                     Toast.LENGTH_SHORT
             ).show();
             return;
         }
 
-        if (!user.getPassword().equals(password)) {
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty() || dob.isEmpty()) {
             Toast.makeText(
-                    this, "Incorrect password. Please try again",
+                    this, "Please fill in all of the required fields",
                     Toast.LENGTH_SHORT
             ).show();
+            etEmail.setText("");
+            etPassword.setText("");
+            etName.setText("");
+            etDob.setText("");
             return;
         }
 
-        Intent intent = new Intent(MainActivity.this, LibraryActivity.class);
+        User user = new User(email, password, name, dob);
+        dbHelper.insertUser(user);
+
+        Intent intent = new Intent(RegisterActivity.this, LibraryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("USER", user);
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
 }
