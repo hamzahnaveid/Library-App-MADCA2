@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MainActivity.this, LibraryActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("USER", user);
+        bundle.putString("EMAIL", email);
         intent.putExtras(bundle);
         startActivity(intent);
     }
