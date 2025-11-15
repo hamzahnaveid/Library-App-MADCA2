@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -55,5 +56,10 @@ public class LibraryActivity extends AppCompatActivity {
             startActivity(intent);
         }
         return true;
+    }
+
+    public void toAddBookScreen(View view) {
+        Intent intent = new Intent(LibraryActivity.this, AddBookActivity.class);
+        startActivity(intent);
     }
 }

@@ -12,10 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LibraryAppMADCA2">
         <activity
+            android:name=".AddBookActivity"
+            android:label="Add Book"
+            android:parentActivityName=".LibraryActivity"
+            android:exported="false" />
+        <activity
             android:name=".UserProfileActivity"
+            android:label="My Profile"
+            android:parentActivityName=".LibraryActivity"
             android:exported="false" />
         <activity
             android:name=".LibraryActivity"
+            android:label="My Library"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"

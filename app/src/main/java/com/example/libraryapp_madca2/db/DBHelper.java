@@ -1,5 +1,6 @@
 package com.example.libraryapp_madca2.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -7,8 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
+import com.example.libraryapp_madca2.classes.Book;
 import com.example.libraryapp_madca2.classes.User;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -26,6 +26,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createUserTableStatement = "CREATE TABLE User(Email TEXT PRIMARY KEY, Password TEXT, Name TEXT, Dob TEXT)";
         db.execSQL(createUserTableStatement);
+
+        String createBookTableStatement = "CREATE TABLE Book(BookID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " Title TEXT, Author TEXT, Category TEXT, StartDate TEXT, Review TEXT, Status TEXT)";
+        db.execSQL(createBookTableStatement);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(createUserStatement);
         } catch (SQLException e) {
             Toast.makeText(context,
-                    "Error in inserting data into DB",
+                    "Error in inserting user into DB",
                     Toast.LENGTH_LONG
                     ).show();
         }
@@ -86,4 +90,74 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
     }
+
+    public void insertBook(Book book) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("Title", book.getTitle());
+        cv.put("Author", book.getAuthor());
+        cv.put("Category", book.getCategory());
+        cv.put("StartDate", book.getStartDate());
+        cv.put("Review", book.getReview());
+        cv.put("Status", book.getStatus());
+
+        long result = db.insert("Book", null, cv);
+        if (result == -1) {
+            Toast.makeText(context,
+                    "Error in inserting book into DB",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+        else {
+            Toast.makeText(context,
+                    "Book successfully added to library",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
+        db.close();
+    }
+
+    public Book findBook(int id) {
+        String title, author, category, startDate, review, status;
+        SQLiteDatabase db = getReadableDatabase();
+
+        String findBookStatement = "SELECT * FROM Book WHERE BookID = " + id;
+
+        Cursor cursor = db.rawQuery(findBookStatement, null);
+        if (cursor.moveToFirst()) {
+            title = cursor.getString(1);
+            author = cursor.getString(2);
+            category = cursor.getString(3);
+            startDate = cursor.getString(4);
+            review = cursor.getString(5);
+            status = cursor.getString(6);
+        }
+        else {
+            return null;
+        }
+
+        cursor.close();
+        db.close();
+        return new Book(id, title, author, category, startDate, review, status);
+    }
+
+    public void updateBook(int id, String status, String review) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String updateBookStatement = "UPDATE Book SET Status = '" +
+                status +"', Review = '" + review + "' WHERE BookID = " +
+                id;
+
+        try {
+            db.execSQL(updateBookStatement);
+        } catch (SQLException e) {
+            Toast.makeText(context,
+                    "Error in updating book data",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+        db.close();
+    }
+
 }
