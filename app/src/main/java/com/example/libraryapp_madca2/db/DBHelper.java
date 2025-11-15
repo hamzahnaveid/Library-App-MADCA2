@@ -118,6 +118,15 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public boolean bookExists(String title, String author) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String findUserStatement = "SELECT * FROM Book WHERE Title = ? AND Author = ?";
+
+        Cursor cursor = db.rawQuery(findUserStatement, new String[] {title, author});
+        return cursor.moveToFirst();
+    }
+
     public Book findBook(int id) {
         String title, author, category, startDate, review, status;
         SQLiteDatabase db = getReadableDatabase();

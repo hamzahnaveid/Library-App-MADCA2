@@ -1,8 +1,11 @@
 package com.example.libraryapp_madca2;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -16,8 +19,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.libraryapp_madca2.classes.Book;
 import com.example.libraryapp_madca2.db.DBHelper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class AddBookActivity extends AppCompatActivity {
 
@@ -74,6 +79,25 @@ public class AddBookActivity extends AppCompatActivity {
         etReview = findViewById(R.id.et_addreview);
     }
 
+    public void showCalendar(View view) {
+        DatePickerDialog dialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        etStartDate.setText(
+                                String.valueOf(dayOfMonth) + "/" +
+                                String.valueOf(month) + "/" +
+                                String.valueOf((year))
+                        );
+                    }
+                },
+                LocalDate.now().getYear(),
+                LocalDate.now().getMonth().getValue(),
+                LocalDate.now().getDayOfMonth());
+
+        dialog.show();
+    }
+
     public void addBook(View view) {
         String title = etTitle.getText().toString();
         String author = etAuthor.getText().toString();
@@ -81,6 +105,22 @@ public class AddBookActivity extends AppCompatActivity {
         String startDate = etStartDate.getText().toString();
         String review = etReview.getText().toString();
         String status = spinnerStatus.getSelectedItem().toString();
+
+        if (dbHelper.bookExists(title, author)) {
+            Toast.makeText(
+                    this,
+                    "This book already exists in your library",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        if (title.isEmpty() || author.isEmpty() || startDate.isEmpty() || review.isEmpty()) {
+            Toast.makeText(this,
+                    "Please fill in all of the required fields",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
 
         Book book = new Book(0, title, author, category, startDate, review, status);
         dbHelper.insertBook(book);

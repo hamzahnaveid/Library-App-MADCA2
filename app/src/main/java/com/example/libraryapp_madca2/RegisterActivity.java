@@ -20,7 +20,6 @@ public class RegisterActivity extends AppCompatActivity {
     private DBHelper dbHelper;
 
     EditText etEmail, etPassword, etName, etDob;
-    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +54,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (email.isEmpty() || password.isEmpty() || name.isEmpty() || dob.isEmpty()) {
-            Toast.makeText(
-                    this, "Please fill in all of the required fields",
+            Toast.makeText(this,
+                    "Please fill in all of the required fields",
                     Toast.LENGTH_SHORT
             ).show();
             etEmail.setText("");
