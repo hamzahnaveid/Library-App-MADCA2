@@ -13,7 +13,9 @@
         android:theme="@style/Theme.LibraryAppMADCA2">
         <activity
             android:name=".UpdateBookActivity"
-            android:exported="false" />
+            android:label="Book Details"
+            android:exported="false"
+            android:parentActivityName=".LibraryActivity"/>
         <activity
             android:name=".AddBookActivity"
             android:exported="false"
@@ -30,9 +32,11 @@
             android:label="My Library" />
         <activity
             android:name=".RegisterActivity"
+            android:label="Register Account"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:label="Sign in"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

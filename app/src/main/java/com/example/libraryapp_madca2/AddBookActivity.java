@@ -25,8 +25,6 @@ import java.util.Arrays;
 
 public class AddBookActivity extends AppCompatActivity {
 
-
-    String email;
     DBHelper dbHelper;
 
     Spinner spinnerStatus, spinnerCategory;
@@ -50,7 +48,6 @@ public class AddBookActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        email = getIntent().getExtras().getString("EMAIL");
         dbHelper = new DBHelper(this);
 
         //Populating Category spinner
@@ -126,10 +123,8 @@ public class AddBookActivity extends AppCompatActivity {
 
         Book book = new Book(0, title, author, category, startDate, review, status);
         dbHelper.insertBook(book);
+
         Intent intent = new Intent(AddBookActivity.this, LibraryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("EMAIL", email);
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 }

@@ -41,16 +41,25 @@ public class DBHelper extends SQLiteOpenHelper {
     //Handling User table
     public void insertUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String createUserStatement = "INSERT INTO User VALUES('" +
-                user.getEmail() + "', '" + user.getPassword() +
-                "', '" + user.getName() + "', '" + user.getDob() + "')";
-        try {
-            db.execSQL(createUserStatement);
-        } catch (SQLException e) {
+        ContentValues cv = new ContentValues();
+
+        cv.put("Email", user.getEmail());
+        cv.put("Password", user.getPassword());
+        cv.put("Name", user.getName());
+        cv.put("Dob", user.getDob());
+
+        long result = db.insert("User", null, cv);
+        if (result == -1) {
             Toast.makeText(context,
                     "Error in inserting user into DB",
                     Toast.LENGTH_LONG
-                    ).show();
+            ).show();
+        }
+        else {
+            Toast.makeText(context,
+                    "Book successfully added to library",
+                    Toast.LENGTH_SHORT
+            ).show();
         }
         db.close();
     }
@@ -78,18 +87,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public void updateUser(String email, String name, String dob) {
         SQLiteDatabase db = getReadableDatabase();
 
-        String updateUserStatement = "UPDATE User SET Name = '" +
-                name +"', Dob = '" + dob + "' WHERE Email = '" +
-                email + "'";
-
+        SQLiteStatement updateUserStatement = db.compileStatement("UPDATE User SET Name = ?, Dob = ? WHERE Email = ?");
+        updateUserStatement.bindString(1, name);
+        updateUserStatement.bindString(2, dob);
+        updateUserStatement.bindString(3, email);
         try {
-            db.execSQL(updateUserStatement);
+            updateUserStatement.execute();
         } catch (SQLException e) {
             Toast.makeText(context,
                     "Error in updating user data",
                     Toast.LENGTH_LONG
             ).show();
         }
+        updateUserStatement.close();
         db.close();
     }
 

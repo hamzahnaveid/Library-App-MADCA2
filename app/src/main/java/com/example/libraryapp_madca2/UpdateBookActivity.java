@@ -1,5 +1,6 @@
 package com.example.libraryapp_madca2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -80,5 +81,8 @@ public class UpdateBookActivity extends AppCompatActivity {
         book.setReview(review);
 
         dbHelper.updateBook(book.getId(), book.getStatus(), book.getReview());
+
+        Intent intent = new Intent(UpdateBookActivity.this, LibraryActivity.class);
+        startActivity(intent);
     }
 }

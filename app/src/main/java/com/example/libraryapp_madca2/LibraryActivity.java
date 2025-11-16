@@ -31,7 +31,7 @@ public class LibraryActivity extends AppCompatActivity {
     RVAdapter rvAdapter;
     DBHelper dbHelper;
     ArrayList<String> bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookStatus;
-    User user;
+//    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +44,9 @@ public class LibraryActivity extends AppCompatActivity {
             return insets;
         });
 
-        String email = getIntent().getExtras().getString("EMAIL");
+//        String email = getIntent().getExtras().getString("EMAIL");
         dbHelper = new DBHelper(this);
-        user = dbHelper.findUser(email);
+//        user = dbHelper.findUser(email);
 
         bookId = new ArrayList<>();
         bookTitle = new ArrayList<>();
@@ -102,9 +102,9 @@ public class LibraryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.profile_button) {
             Intent intent = new Intent(LibraryActivity.this, UserProfileActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("EMAIL", user.getEmail());
-            intent.putExtras(bundle);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("EMAIL", user.getEmail());
+//            intent.putExtras(bundle);
             startActivity(intent);
         }
         return true;
@@ -112,9 +112,9 @@ public class LibraryActivity extends AppCompatActivity {
 
     public void toAddBookScreen(View view) {
         Intent intent = new Intent(LibraryActivity.this, AddBookActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("EMAIL", user.getEmail());
-        intent.putExtras(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("EMAIL", user.getEmail());
+//        intent.putExtras(bundle);
         startActivity(intent);
     }
 }
