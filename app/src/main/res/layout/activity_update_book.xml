@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpdateBookActivity">
+
+    <EditText
+        android:id="@+id/et_updatereview"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="-297dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Review"
+        android:inputType="textMultiLine" />
+
+    <Spinner
+        android:id="@+id/spinner_updatestatus"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignTop="@id/et_updatereview"
+        android:layout_marginTop="-55dp"
+        android:layout_marginBottom="-71dp" />
+
+    <Button
+        android:id="@+id/button_updatebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/et_updatereview"
+        android:layout_marginBottom="-111dp"
+        android:onClick="updateBook"
+        android:text="Update Reading Details" />
+
+    <TextView
+        android:id="@+id/label_updatetitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/spinner_updatestatus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-117dp"
+        android:text="Title"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/label_updateauthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/label_updatetitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-40dp"
+        android:text="Author"
+        android:textSize="24sp"
+        android:textStyle="italic" />
+
+
+</RelativeLayout>

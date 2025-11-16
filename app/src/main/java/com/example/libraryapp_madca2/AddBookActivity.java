@@ -3,7 +3,6 @@ package com.example.libraryapp_madca2;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -23,7 +22,6 @@ import com.example.libraryapp_madca2.db.DBHelper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 public class AddBookActivity extends AppCompatActivity {
 

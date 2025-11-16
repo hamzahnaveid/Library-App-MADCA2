@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.widget.Toast;
 
 import com.example.libraryapp_madca2.classes.Book;
@@ -124,7 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String getAllBooksStatement = "SELECT * FROM Book";
 
-        Cursor cursor = null;
+        Cursor cursor;
         cursor = db.rawQuery(getAllBooksStatement, null);
         return cursor;
     }
@@ -165,18 +166,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public void updateBook(int id, String status, String review) {
         SQLiteDatabase db = getReadableDatabase();
 
-        String updateBookStatement = "UPDATE Book SET Status = '" +
-                status +"', Review = '" + review + "' WHERE BookID = " +
-                id;
-
+        SQLiteStatement updateBookStatement = db.compileStatement("UPDATE Book SET Status = ?, Review = ? WHERE BookID = ?");
+        updateBookStatement.bindString(1, status);
+        updateBookStatement.bindString(2, review);
+        updateBookStatement.bindLong(3, id);
         try {
-            db.execSQL(updateBookStatement);
+            updateBookStatement.execute();
         } catch (SQLException e) {
             Toast.makeText(context,
                     "Error in updating book data",
                     Toast.LENGTH_LONG
             ).show();
         }
+        updateBookStatement.close();
         db.close();
     }
 

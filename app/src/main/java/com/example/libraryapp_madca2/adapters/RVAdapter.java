@@ -1,18 +1,19 @@
 package com.example.libraryapp_madca2.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.libraryapp_madca2.R;
-
-import org.w3c.dom.Text;
+import com.example.libraryapp_madca2.UpdateBookActivity;
 
 import java.util.ArrayList;
 
@@ -60,6 +61,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         else {
             holder.tvStatus.setTextColor(Color.YELLOW);
         }
+        holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UpdateBookActivity.class);
+                intent.putExtra("BOOK_ID", String.valueOf(bookId.get(holder.getBindingAdapterPosition())));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -69,6 +78,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvBookId, tvBookTitle, tvAuthor, tvCategory, tvStartDate, tvStatus;
+        LinearLayout mainLayout;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tvBookId = itemView.findViewById(R.id.rv_book_id);
@@ -77,6 +87,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
             tvCategory = itemView.findViewById(R.id.rv_category);
             tvStartDate = itemView.findViewById(R.id.rv_startdate);
             tvStatus = itemView.findViewById(R.id.rv_status);
+            mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }
 }
