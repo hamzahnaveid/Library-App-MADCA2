@@ -37,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    //Handling User table
     public void insertUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         String createUserStatement = "INSERT INTO User VALUES('" +
@@ -91,6 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    //Handling Book table
     public void insertBook(Book book) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -116,6 +118,15 @@ public class DBHelper extends SQLiteOpenHelper {
             ).show();
         }
         db.close();
+    }
+
+    public Cursor getAllBooks() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String getAllBooksStatement = "SELECT * FROM Book";
+
+        Cursor cursor = null;
+        cursor = db.rawQuery(getAllBooksStatement, null);
+        return cursor;
     }
 
     public boolean bookExists(String title, String author) {
