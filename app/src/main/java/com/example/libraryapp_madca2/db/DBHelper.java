@@ -29,7 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createUserTableStatement);
 
         String createBookTableStatement = "CREATE TABLE Book(BookID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " Title TEXT, Author TEXT, Category TEXT, StartDate TEXT, Review TEXT, Status TEXT)";
+                " Title TEXT, Author TEXT, Category TEXT, StartDate TEXT, Review TEXT, Status TEXT, UserEmail TEXT, FOREIGN KEY(UserEmail) REFERENCES User(EMAIL))";
         db.execSQL(createBookTableStatement);
     }
 
@@ -57,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         else {
             Toast.makeText(context,
-                    "Book successfully added to library",
+                    "User successfully registered",
                     Toast.LENGTH_SHORT
             ).show();
         }
@@ -104,7 +104,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //Handling Book table
-    public void insertBook(Book book) {
+    public void insertBook(Book book, String userEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -114,6 +114,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("StartDate", book.getStartDate());
         cv.put("Review", book.getReview());
         cv.put("Status", book.getStatus());
+        cv.put("UserEmail", userEmail);
 
         long result = db.insert("Book", null, cv);
         if (result == -1) {
@@ -131,21 +132,21 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor getAllBooks() {
+    public Cursor getAllBooks(String userEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String getAllBooksStatement = "SELECT * FROM Book";
+        String getAllBooksStatement = "SELECT * FROM Book WHERE UserEmail = ?";
 
         Cursor cursor;
-        cursor = db.rawQuery(getAllBooksStatement, null);
+        cursor = db.rawQuery(getAllBooksStatement, new String[] {userEmail});
         return cursor;
     }
 
-    public boolean bookExists(String title, String author) {
+    public boolean bookExists(String title, String author, String userEmail) {
         SQLiteDatabase db = getWritableDatabase();
 
-        String findUserStatement = "SELECT * FROM Book WHERE Title = ? AND Author = ?";
+        String findUserStatement = "SELECT * FROM Book WHERE Title = ? AND Author = ? AND UserEmail = ?";
 
-        Cursor cursor = db.rawQuery(findUserStatement, new String[] {title, author});
+        Cursor cursor = db.rawQuery(findUserStatement, new String[] {title, author, userEmail});
         return cursor.moveToFirst();
     }
 

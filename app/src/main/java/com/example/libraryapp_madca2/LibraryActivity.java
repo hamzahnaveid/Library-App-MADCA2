@@ -1,6 +1,8 @@
 package com.example.libraryapp_madca2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -82,6 +84,9 @@ public class LibraryActivity extends AppCompatActivity {
     };
 
     public void displayBooks() {
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String userEmail = sp.getString("EMAIL", "");
+
         Book book;
         int bookId;
         String bookTitle;
@@ -91,7 +96,7 @@ public class LibraryActivity extends AppCompatActivity {
         String bookReview;
         String bookStatus;
 
-        Cursor cursor = dbHelper.getAllBooks();
+        Cursor cursor = dbHelper.getAllBooks(userEmail);
 
         if (cursor.getCount() == 0) {
             Toast.makeText(

@@ -1,7 +1,9 @@
 package com.example.libraryapp_madca2;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -97,6 +99,9 @@ public class AddBookActivity extends AppCompatActivity {
     }
 
     public void addBook(View view) {
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String userEmail = sp.getString("EMAIL", "");
+
         String title = etTitle.getText().toString();
         String author = etAuthor.getText().toString();
         String category = spinnerCategory.getSelectedItem().toString();
@@ -104,7 +109,7 @@ public class AddBookActivity extends AppCompatActivity {
         String review = etReview.getText().toString();
         String status = spinnerStatus.getSelectedItem().toString();
 
-        if (dbHelper.bookExists(title, author)) {
+        if (dbHelper.bookExists(title, author, userEmail)) {
             Toast.makeText(
                     this,
                     "This book already exists in your library",
@@ -122,7 +127,7 @@ public class AddBookActivity extends AppCompatActivity {
         }
 
         Book book = new Book(0, title, author, category, startDate, review, status);
-        dbHelper.insertBook(book);
+        dbHelper.insertBook(book, userEmail);
 
         Intent intent = new Intent(AddBookActivity.this, LibraryActivity.class);
         startActivity(intent);

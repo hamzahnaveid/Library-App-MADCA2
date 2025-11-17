@@ -40,9 +40,9 @@ public class UserProfileActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         SharedPreferences sp = getApplicationContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         String email = sp.getString("EMAIL", "");
-        
         dbHelper = new DBHelper(this);
         user = dbHelper.findUser(email);
 
