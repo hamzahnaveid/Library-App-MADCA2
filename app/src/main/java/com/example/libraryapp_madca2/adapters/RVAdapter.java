@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,15 +20,17 @@ import com.example.libraryapp_madca2.classes.Book;
 
 import java.util.ArrayList;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
+public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> implements Filterable {
 
     Context context;
-    ArrayList<Book> books;
+    ArrayList<Book> books, tempList;
+    ArrayList<Book> filteredList = new ArrayList<>();
 
     public RVAdapter(Context context,
                      ArrayList<Book> books) {
         this.context = context;
         this.books = books;
+        this.tempList = books;
     }
 
     @NonNull
@@ -66,6 +70,42 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     public int getItemCount() {
         return books.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return searchFilter;
+    }
+
+    public Filter searchFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            String query = constraint.toString();
+
+            if (query.isEmpty()) {
+                results.values = tempList;
+            }
+            else {
+                filteredList.clear();
+
+                for (Book book : tempList) {
+                    if (book.getTitle().equalsIgnoreCase(query)
+                            || book.getCategory().equalsIgnoreCase(query)
+                            || book.getStatus().equalsIgnoreCase(query)) {
+                        filteredList.add(book);
+                    }
+                }
+                results.values = filteredList;
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            books = (ArrayList<Book>) results.values;
+            notifyDataSetChanged();
+        }
+    };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvBookId, tvBookTitle, tvAuthor, tvCategory, tvStartDate, tvStatus;

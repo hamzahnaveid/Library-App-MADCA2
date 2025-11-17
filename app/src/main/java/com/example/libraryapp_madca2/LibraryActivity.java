@@ -138,11 +138,13 @@ public class LibraryActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                rvAdapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String query) {
+                rvAdapter.getFilter().filter(query);
                 return false;
             }
         });
