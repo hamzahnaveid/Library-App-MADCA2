@@ -12,41 +12,40 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.libraryapp_madca2.adapters.RVAdapter;
-import com.example.libraryapp_madca2.classes.User;
 import com.example.libraryapp_madca2.db.DBHelper;
 
 import java.util.ArrayList;
 
 public class LibraryActivity extends AppCompatActivity {
 
+    ConstraintLayout mainLibrary;
     RecyclerView rv;
     RVAdapter rvAdapter;
     DBHelper dbHelper;
     ArrayList<String> bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookStatus;
-//    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_library);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_library), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-//        String email = getIntent().getExtras().getString("EMAIL");
         dbHelper = new DBHelper(this);
-//        user = dbHelper.findUser(email);
 
         bookId = new ArrayList<>();
         bookTitle = new ArrayList<>();
@@ -58,6 +57,7 @@ public class LibraryActivity extends AppCompatActivity {
         displayBooks();
 
         rv = findViewById(R.id.recycler_view);
+        mainLibrary = findViewById(R.id.main_library);
         rvAdapter = new RVAdapter(this,
                 bookId,
                 bookTitle,
@@ -68,7 +68,24 @@ public class LibraryActivity extends AppCompatActivity {
         rv.setAdapter(rvAdapter);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(rv);
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int bookIdSwiped = Integer.parseInt(bookId.remove(viewHolder.getBindingAdapterPosition()));
+            rvAdapter.notifyItemRemoved(viewHolder.getBindingAdapterPosition());
+            dbHelper.removeBook(bookIdSwiped);
+        }
+    };
 
     public void displayBooks() {
         Cursor cursor = dbHelper.getAllBooks();
@@ -102,9 +119,6 @@ public class LibraryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.profile_button) {
             Intent intent = new Intent(LibraryActivity.this, UserProfileActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("EMAIL", user.getEmail());
-//            intent.putExtras(bundle);
             startActivity(intent);
         }
         return true;
@@ -112,9 +126,6 @@ public class LibraryActivity extends AppCompatActivity {
 
     public void toAddBookScreen(View view) {
         Intent intent = new Intent(LibraryActivity.this, AddBookActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("EMAIL", user.getEmail());
-//        intent.putExtras(bundle);
         startActivity(intent);
     }
 }

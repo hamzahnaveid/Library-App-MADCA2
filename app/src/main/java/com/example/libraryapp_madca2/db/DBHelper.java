@@ -174,7 +174,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void updateBook(int id, String status, String review) {
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
 
         SQLiteStatement updateBookStatement = db.compileStatement("UPDATE Book SET Status = ?, Review = ? WHERE BookID = ?");
         updateBookStatement.bindString(1, status);
@@ -192,4 +192,27 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void removeBook(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        SQLiteStatement deleteBookStatement = db.compileStatement("DELETE FROM Book WHERE BookID = ?");
+        deleteBookStatement.bindLong(1, id);
+        try {
+            deleteBookStatement.execute();
+        } catch (SQLException e) {
+            Toast.makeText(context,
+                    "Error in updating book data",
+                    Toast.LENGTH_LONG
+            ).show();
+            deleteBookStatement.close();
+            db.close();
+            return;
+        }
+        Toast.makeText(context,
+                "Successfully removed book from library",
+                Toast.LENGTH_LONG
+        ).show();
+        deleteBookStatement.close();
+        db.close();
+    }
 }
