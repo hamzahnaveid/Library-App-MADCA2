@@ -14,28 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.libraryapp_madca2.R;
 import com.example.libraryapp_madca2.UpdateBookActivity;
+import com.example.libraryapp_madca2.classes.Book;
 
 import java.util.ArrayList;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     Context context;
-    ArrayList<String> bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookStatus;
+    ArrayList<Book> books;
 
     public RVAdapter(Context context,
-                     ArrayList<String> bookId,
-                     ArrayList<String> bookTitle,
-                     ArrayList<String> bookAuthor,
-                     ArrayList<String> bookCategory,
-                     ArrayList<String> bookStartDate,
-                     ArrayList<String> bookStatus) {
+                     ArrayList<Book> books) {
         this.context = context;
-        this.bookId = bookId;
-        this.bookTitle = bookTitle;
-        this.bookAuthor = bookAuthor;
-        this.bookCategory = bookCategory;
-        this.bookStartDate = bookStartDate;
-        this.bookStatus = bookStatus;
+        this.books = books;
     }
 
     @NonNull
@@ -48,12 +39,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tvBookId.setText(String.valueOf(bookId.get(position)));
-        holder.tvBookTitle.setText(String.valueOf(bookTitle.get(position)));
-        holder.tvAuthor.setText(String.valueOf(bookAuthor.get(position)));
-        holder.tvCategory.setText(String.valueOf(bookCategory.get(position)));
-        holder.tvStartDate.setText(String.valueOf(bookStartDate.get(position)));
-        holder.tvStatus.setText(String.valueOf(bookStatus.get(position)));
+        holder.tvBookId.setText(String.valueOf(books.get(position).getId()));
+        holder.tvBookTitle.setText(String.valueOf(books.get(position).getTitle()));
+        holder.tvAuthor.setText(String.valueOf(books.get(position).getAuthor()));
+        holder.tvCategory.setText(String.valueOf(books.get(position).getCategory()));
+        holder.tvStartDate.setText(String.valueOf(books.get(position).getStartDate()));
+        holder.tvStatus.setText(String.valueOf(books.get(position).getStatus()));
 
         if (holder.tvStatus.getText().toString().equals("Finished")) {
             holder.tvStatus.setTextColor(Color.GREEN);
@@ -65,7 +56,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, UpdateBookActivity.class);
-                intent.putExtra("BOOK_ID", String.valueOf(bookId.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("BOOK_ID", String.valueOf(books.get(holder.getBindingAdapterPosition()).getId()));
                 context.startActivity(intent);
             }
         });
@@ -73,7 +64,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        return bookId.size();
+        return books.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

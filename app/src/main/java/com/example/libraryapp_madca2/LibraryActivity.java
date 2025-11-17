@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.libraryapp_madca2.adapters.RVAdapter;
+import com.example.libraryapp_madca2.classes.Book;
 import com.example.libraryapp_madca2.db.DBHelper;
 import androidx.appcompat.widget.SearchView;
 
@@ -33,7 +34,7 @@ public class LibraryActivity extends AppCompatActivity {
     RecyclerView rv;
     RVAdapter rvAdapter;
     DBHelper dbHelper;
-    ArrayList<String> bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookStatus;
+    ArrayList<Book> books;
     SearchView searchView;
 
     @Override
@@ -49,24 +50,14 @@ public class LibraryActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-        bookId = new ArrayList<>();
-        bookTitle = new ArrayList<>();
-        bookAuthor = new ArrayList<>();
-        bookCategory = new ArrayList<>();
-        bookStartDate = new ArrayList<>();
-        bookStatus = new ArrayList<>();
+        books = new ArrayList<>();
 
         displayBooks();
 
         rv = findViewById(R.id.recycler_view);
         mainLibrary = findViewById(R.id.main_library);
         rvAdapter = new RVAdapter(this,
-                bookId,
-                bookTitle,
-                bookAuthor,
-                bookCategory,
-                bookStartDate,
-                bookStatus);
+                books);
         rv.setAdapter(rvAdapter);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -83,14 +74,25 @@ public class LibraryActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            int bookIdSwiped = Integer.parseInt(bookId.remove(viewHolder.getBindingAdapterPosition()));
+            Book book = books.remove(viewHolder.getBindingAdapterPosition());
+            int bookId = book.getId();
             rvAdapter.notifyItemRemoved(viewHolder.getBindingAdapterPosition());
-            dbHelper.removeBook(bookIdSwiped);
+            dbHelper.removeBook(bookId);
         }
     };
 
     public void displayBooks() {
+        Book book;
+        int bookId;
+        String bookTitle;
+        String bookAuthor;
+        String bookCategory;
+        String bookStartDate;
+        String bookReview;
+        String bookStatus;
+
         Cursor cursor = dbHelper.getAllBooks();
+
         if (cursor.getCount() == 0) {
             Toast.makeText(
                     this,
@@ -100,12 +102,15 @@ public class LibraryActivity extends AppCompatActivity {
         }
         else {
             while (cursor.moveToNext()) {
-                bookId.add(cursor.getString(0));
-                bookTitle.add(cursor.getString(1));
-                bookAuthor.add(cursor.getString(2));
-                bookCategory.add(cursor.getString(3));
-                bookStartDate.add(cursor.getString(4));
-                bookStatus.add(cursor.getString(6));
+                bookId = cursor.getInt(0);
+                bookTitle = cursor.getString(1);
+                bookAuthor = cursor.getString(2);
+                bookCategory = cursor.getString(3);
+                bookStartDate = cursor.getString(4);
+                bookReview = cursor.getString(5);
+                bookStatus = cursor.getString(6);
+                book = new Book(bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookReview, bookStatus);
+                books.add(book);
             }
         }
     }
