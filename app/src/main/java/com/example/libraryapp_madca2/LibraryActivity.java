@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.libraryapp_madca2.adapters.RVAdapter;
 import com.example.libraryapp_madca2.db.DBHelper;
+import androidx.appcompat.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class LibraryActivity extends AppCompatActivity {
     RVAdapter rvAdapter;
     DBHelper dbHelper;
     ArrayList<String> bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookStatus;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +114,7 @@ public class LibraryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
+        setupSearchView(menu);
         return true;
     }
 
@@ -122,6 +125,22 @@ public class LibraryActivity extends AppCompatActivity {
             startActivity(intent);
         }
         return true;
+    }
+
+    public void setupSearchView(Menu menu) {
+        searchView = (SearchView) menu.findItem(R.id.search_view).getActionView();
+        searchView.setQueryHint("Search...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     public void toAddBookScreen(View view) {
