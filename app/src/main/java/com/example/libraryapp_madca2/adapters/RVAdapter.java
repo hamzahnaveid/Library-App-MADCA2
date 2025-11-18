@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -26,6 +28,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> impl
     Context context;
     ArrayList<Book> books, tempList;
     ArrayList<Book> filteredList = new ArrayList<>();
+    Animation translateAnim;
 
     public RVAdapter(Context context,
                      ArrayList<Book> books) {
@@ -44,6 +47,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> impl
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        if (books.get(position).getFavourite() == 0) {
+            holder.imgFavouriteIcon.setColorFilter(Color.LTGRAY);
+        }
+        else {
+            holder.imgFavouriteIcon.setColorFilter(Color.RED);
+        }
+
         holder.tvBookTitle.setText(String.valueOf(books.get(position).getTitle()));
         holder.tvAuthor.setText(String.valueOf(books.get(position).getAuthor()));
         holder.tvCategory.setText(String.valueOf(books.get(position).getCategory()));
@@ -121,6 +132,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> impl
             tvStartDate = itemView.findViewById(R.id.rv_startdate);
             tvStatus = itemView.findViewById(R.id.rv_status);
             mainLayout = itemView.findViewById(R.id.mainLayout);
+            translateAnim = AnimationUtils.loadAnimation(context, R.anim.translate_anim);
+            mainLayout.setAnimation(translateAnim);
         }
     }
 }

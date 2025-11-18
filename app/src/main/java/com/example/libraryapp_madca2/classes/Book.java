@@ -9,8 +9,9 @@ public class Book {
     String startDate;
     String review;
     String status;
+    int favourite;
 
-    public Book(int id, String title, String author, String category, String startDate, String review, String status) {
+    public Book(int id, String title, String author, String category, String startDate, String review, String status, int favourite) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -18,6 +19,7 @@ public class Book {
         this.startDate = startDate;
         this.review = review;
         this.status = status;
+        this.favourite = favourite;
     }
 
     public int getId() {
@@ -74,6 +76,19 @@ public class Book {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(int favourite) {
+        this.favourite = favourite;
+    }
+
+    public String toString() {
+        return "Title: " + this.title + "\n" +
+                "Author " + this.author + "\n\n";
     }
 
 }

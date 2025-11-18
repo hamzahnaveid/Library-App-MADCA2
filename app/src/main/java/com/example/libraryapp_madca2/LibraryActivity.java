@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +39,7 @@ public class LibraryActivity extends AppCompatActivity {
     RVAdapter rvAdapter;
     DBHelper dbHelper;
     ArrayList<Book> books;
+    ArrayList<Book> favouriteBooks;
     SearchView searchView;
     ImageView imgFavouriteIcon;
 
@@ -57,8 +57,10 @@ public class LibraryActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
 
         books = new ArrayList<>();
+        favouriteBooks = new ArrayList<>();
 
         displayBooks();
+        getFavouriteBooks();
 
         rv = findViewById(R.id.recycler_view);
         mainLibrary = findViewById(R.id.main_library);
@@ -99,8 +101,18 @@ public class LibraryActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             imgFavouriteIcon = viewHolder.itemView.findViewById(R.id.rv_favourite_icon);
 
-            imgFavouriteIcon.setColorFilter(Color.RED);
-            rvAdapter.notifyDataSetChanged();
+            Book book = books.get(viewHolder.getBindingAdapterPosition());
+            if (book.getFavourite() == 0) {
+                book.setFavourite(1);
+                favouriteBooks.add(book);
+                dbHelper.updateBookFavourite(book.getId(), 1);
+            }
+            else {
+                book.setFavourite(0);
+                favouriteBooks.remove(book);
+                dbHelper.updateBookFavourite(book.getId(), 0);
+            }
+            rvAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
         }
     };
 
@@ -116,6 +128,7 @@ public class LibraryActivity extends AppCompatActivity {
         String bookStartDate;
         String bookReview;
         String bookStatus;
+        int bookFavourited;
 
         Cursor cursor = dbHelper.getAllBooks(userEmail);
 
@@ -135,9 +148,40 @@ public class LibraryActivity extends AppCompatActivity {
                 bookStartDate = cursor.getString(4);
                 bookReview = cursor.getString(5);
                 bookStatus = cursor.getString(6);
-                book = new Book(bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookReview, bookStatus);
+                bookFavourited = cursor.getInt(8);
+                book = new Book(bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookReview, bookStatus, bookFavourited);
                 books.add(book);
             }
+        }
+    }
+
+    public void getFavouriteBooks() {
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String userEmail = sp.getString("EMAIL", "");
+
+        Book book;
+        int bookId;
+        String bookTitle;
+        String bookAuthor;
+        String bookCategory;
+        String bookStartDate;
+        String bookReview;
+        String bookStatus;
+        int bookFavourited;
+
+        Cursor cursor = dbHelper.getFavouriteBooks(userEmail);
+
+        while (cursor.moveToNext()) {
+            bookId = cursor.getInt(0);
+            bookTitle = cursor.getString(1);
+            bookAuthor = cursor.getString(2);
+            bookCategory = cursor.getString(3);
+            bookStartDate = cursor.getString(4);
+            bookReview = cursor.getString(5);
+            bookStatus = cursor.getString(6);
+            bookFavourited = cursor.getInt(8);
+            book = new Book(bookId, bookTitle, bookAuthor, bookCategory, bookStartDate, bookReview, bookStatus, bookFavourited);
+            favouriteBooks.add(book);
         }
     }
 
@@ -158,15 +202,24 @@ public class LibraryActivity extends AppCompatActivity {
         else if (item.getItemId() == R.id.favourite_button) {
             new AlertDialog.Builder(LibraryActivity.this)
                     .setTitle("Favourite Books")
-                    .setMessage("Favourite books")
+                    .setMessage(getFavouriteBooksToString())
                     .setPositiveButton("OK", null)
                     .show();
         }
         return true;
     }
 
+    public String getFavouriteBooksToString() {
+        String result = "";
+        for (Book book : favouriteBooks) {
+            result += book.toString();
+        }
+        return result;
+    }
+
     public void setupSearchView(Menu menu) {
         searchView = (SearchView) menu.findItem(R.id.search_view).getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint("Search...");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

@@ -29,7 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createUserTableStatement);
 
         String createBookTableStatement = "CREATE TABLE Book(BookID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " Title TEXT, Author TEXT, Category TEXT, StartDate TEXT, Review TEXT, Status TEXT, UserEmail TEXT, FOREIGN KEY(UserEmail) REFERENCES User(EMAIL))";
+                " Title TEXT, Author TEXT, Category TEXT, StartDate TEXT, Review TEXT, Status TEXT, UserEmail TEXT, Favourite INT, FOREIGN KEY(UserEmail) REFERENCES User(EMAIL))";
         db.execSQL(createBookTableStatement);
     }
 
@@ -141,6 +141,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getFavouriteBooks(String userEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String getAllBooksStatement = "SELECT * FROM Book WHERE UserEmail = ? AND Favourite = 1";
+
+        Cursor cursor;
+        cursor = db.rawQuery(getAllBooksStatement, new String[] {userEmail});
+        return cursor;
+    }
+
     public boolean bookExists(String title, String author, String userEmail) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -152,6 +161,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Book findBook(int id) {
         String title, author, category, startDate, review, status;
+        int favourited;
         SQLiteDatabase db = getReadableDatabase();
 
         String findBookStatement = "SELECT * FROM Book WHERE BookID = " + id;
@@ -164,6 +174,7 @@ public class DBHelper extends SQLiteOpenHelper {
             startDate = cursor.getString(4);
             review = cursor.getString(5);
             status = cursor.getString(6);
+            favourited = cursor.getInt(8);
         }
         else {
             return null;
@@ -171,7 +182,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        return new Book(id, title, author, category, startDate, review, status);
+        return new Book(id, title, author, category, startDate, review, status, favourited);
     }
 
     public void updateBook(int id, String status, String review) {
@@ -186,6 +197,39 @@ public class DBHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Toast.makeText(context,
                     "Error in updating book data",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+        updateBookStatement.close();
+        db.close();
+    }
+
+    public void updateBookFavourite(int id, int favourited) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        SQLiteStatement updateBookStatement = db.compileStatement("UPDATE Book SET Favourite = ? WHERE BookID = ?");
+        updateBookStatement.bindLong(1, favourited);
+        updateBookStatement.bindLong(2, id);
+        try {
+            updateBookStatement.execute();
+        } catch (SQLException e) {
+            Toast.makeText(context,
+                    "Error in favouriting book",
+                    Toast.LENGTH_LONG
+            ).show();
+            updateBookStatement.close();
+            db.close();
+            return;
+        }
+        if (favourited == 1) {
+            Toast.makeText(context,
+                    "Book added to Favourites",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+        else {
+            Toast.makeText(context,
+                    "Book removed from Favourites",
                     Toast.LENGTH_LONG
             ).show();
         }

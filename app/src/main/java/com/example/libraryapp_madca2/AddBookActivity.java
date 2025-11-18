@@ -126,7 +126,7 @@ public class AddBookActivity extends AppCompatActivity {
             return;
         }
 
-        Book book = new Book(0, title, author, category, startDate, review, status);
+        Book book = new Book(0, title, author, category, startDate, review, status, 0);
         dbHelper.insertBook(book, userEmail);
 
         Intent intent = new Intent(AddBookActivity.this, LibraryActivity.class);
