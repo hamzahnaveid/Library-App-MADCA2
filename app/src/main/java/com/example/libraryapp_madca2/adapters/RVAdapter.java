@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,7 +44,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> impl
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tvBookId.setText(String.valueOf(books.get(position).getId()));
         holder.tvBookTitle.setText(String.valueOf(books.get(position).getTitle()));
         holder.tvAuthor.setText(String.valueOf(books.get(position).getAuthor()));
         holder.tvCategory.setText(String.valueOf(books.get(position).getCategory()));
@@ -108,11 +108,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> impl
     };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvBookId, tvBookTitle, tvAuthor, tvCategory, tvStartDate, tvStatus;
+
+        ImageView imgFavouriteIcon;
+        TextView tvBookTitle, tvAuthor, tvCategory, tvStartDate, tvStatus;
         LinearLayout mainLayout;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvBookId = itemView.findViewById(R.id.rv_book_id);
+            imgFavouriteIcon = itemView.findViewById(R.id.rv_favourite_icon);
             tvBookTitle = itemView.findViewById(R.id.rv_booktitle);
             tvAuthor = itemView.findViewById(R.id.rv_bookauthor);
             tvCategory = itemView.findViewById(R.id.rv_category);

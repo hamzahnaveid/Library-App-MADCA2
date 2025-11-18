@@ -16,19 +16,17 @@
             android:layout_height="wrap_content"
             android:padding="34dp">
 
-            <TextView
-                android:id="@+id/rv_book_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/rv_favourite_icon"
+                android:layout_width="38dp"
+                android:layout_height="57dp"
                 android:layout_marginStart="4dp"
-                android:text="1"
-                android:textColor="@color/design_default_color_primary"
-                android:textSize="40sp"
-                android:textStyle="bold"
+                android:src="@drawable/outline_bookmark_heart_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.26" />
+                app:layout_constraintVertical_bias="0.0"
+                app:tint="#ABA3A3" />
 
             <TextView
                 android:id="@+id/rv_booktitle"
@@ -61,7 +59,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/rv_booktitle"
-                app:layout_constraintStart_toEndOf="@+id/rv_book_id" />
+                app:layout_constraintStart_toEndOf="@id/rv_favourite_icon" />
 
             <TextView
                 android:id="@+id/rv_startdate"

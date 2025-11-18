@@ -1,14 +1,17 @@
 package com.example.libraryapp_madca2;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,6 +41,7 @@ public class LibraryActivity extends AppCompatActivity {
     DBHelper dbHelper;
     ArrayList<Book> books;
     SearchView searchView;
+    ImageView imgFavouriteIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +68,13 @@ public class LibraryActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(rv);
+        ItemTouchHelper deleteItemTouchHelper = new ItemTouchHelper(deleteSimpleCallback);
+        deleteItemTouchHelper.attachToRecyclerView(rv);
+        ItemTouchHelper favouriteItemTouchHelper = new ItemTouchHelper(favouriteSimpleCallback);
+        favouriteItemTouchHelper.attachToRecyclerView(rv);
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+    ItemTouchHelper.SimpleCallback deleteSimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -80,6 +86,21 @@ public class LibraryActivity extends AppCompatActivity {
             int bookId = book.getId();
             rvAdapter.notifyItemRemoved(viewHolder.getBindingAdapterPosition());
             dbHelper.removeBook(bookId);
+        }
+    };
+
+    ItemTouchHelper.SimpleCallback favouriteSimpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            imgFavouriteIcon = viewHolder.itemView.findViewById(R.id.rv_favourite_icon);
+
+            imgFavouriteIcon.setColorFilter(Color.RED);
+            rvAdapter.notifyDataSetChanged();
         }
     };
 
@@ -133,6 +154,13 @@ public class LibraryActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.profile_button) {
             Intent intent = new Intent(LibraryActivity.this, UserProfileActivity.class);
             startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.favourite_button) {
+            new AlertDialog.Builder(LibraryActivity.this)
+                    .setTitle("Favourite Books")
+                    .setMessage("Favourite books")
+                    .setPositiveButton("OK", null)
+                    .show();
         }
         return true;
     }
