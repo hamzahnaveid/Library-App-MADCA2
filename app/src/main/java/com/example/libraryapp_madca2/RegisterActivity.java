@@ -1,6 +1,8 @@
 package com.example.libraryapp_madca2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,7 +22,8 @@ public class RegisterActivity extends AppCompatActivity {
     private DBHelper dbHelper;
 
     EditText etEmail, etPassword, etName, etDob;
-    User user;
+
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+
         etEmail = findViewById(R.id.et_registeremail);
         etPassword = findViewById(R.id.et_registerpassword);
         etName = findViewById(R.id.et_name);
@@ -55,8 +60,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (email.isEmpty() || password.isEmpty() || name.isEmpty() || dob.isEmpty()) {
-            Toast.makeText(
-                    this, "Please fill in all of the required fields",
+            Toast.makeText(this,
+                    "Please fill in all of the required fields",
                     Toast.LENGTH_SHORT
             ).show();
             etEmail.setText("");
@@ -69,10 +74,12 @@ public class RegisterActivity extends AppCompatActivity {
         User user = new User(email, password, name, dob);
         dbHelper.insertUser(user);
 
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putString("EMAIL", email);
+        editor.commit();
+
         Intent intent = new Intent(RegisterActivity.this, LibraryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("EMAIL", email);
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 }

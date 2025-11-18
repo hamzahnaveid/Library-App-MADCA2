@@ -3,6 +3,8 @@ package com.example.libraryapp_madca2;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +40,9 @@ public class UserProfileActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        String email = getIntent().getExtras().getString("EMAIL");
+
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String email = sp.getString("EMAIL", "");
         dbHelper = new DBHelper(this);
         user = dbHelper.findUser(email);
 

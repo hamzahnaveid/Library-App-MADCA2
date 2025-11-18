@@ -12,16 +12,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LibraryAppMADCA2">
         <activity
+            android:name=".UpdateBookActivity"
+            android:label="Book Details"
+            android:exported="false"
+            android:parentActivityName=".LibraryActivity"/>
+        <activity
+            android:name=".AddBookActivity"
+            android:exported="false"
+            android:label="Add Book"
+            android:parentActivityName=".LibraryActivity" />
+        <activity
             android:name=".UserProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="My Profile"
+            android:parentActivityName=".LibraryActivity" />
         <activity
             android:name=".LibraryActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="My Library" />
         <activity
             android:name=".RegisterActivity"
+            android:label="Register Account"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:label="Library App"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

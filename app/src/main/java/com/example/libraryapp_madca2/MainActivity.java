@@ -1,7 +1,8 @@
 package com.example.libraryapp_madca2;
 
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper dbHelper;
     EditText etEmail, etPassword;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
 
         dbHelper = new DBHelper(this);
         etEmail = findViewById(R.id.et_email);
@@ -72,10 +75,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putString("EMAIL", email);
+        editor.commit();
+
         Intent intent = new Intent(MainActivity.this, LibraryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("EMAIL", email);
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 
